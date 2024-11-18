@@ -15,7 +15,7 @@ pub const PixelStyleChars = [8]u8{ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
 pub const PixelStyleColors = [8]color.Color{ .black, .white, .red, .green, .yellow, .magenta, .cyan, .blue };
 
 pub const Stage = struct {
-    pub const STAGEW = 18;
+    pub const STAGEW = 10;
     pub const STAGEH = 18;
     pub const PixelStyle = u3;
 
