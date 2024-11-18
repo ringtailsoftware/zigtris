@@ -10,7 +10,7 @@ const utils = mibu.utils;
 const color = mibu.color;
 const cursor = mibu.cursor;
 
-const DISPLAYW = 51;
+const DISPLAYW = 37;
 const DISPLAYH = 21;
 
 pub const Display = struct {

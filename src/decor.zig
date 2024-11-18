@@ -24,16 +24,19 @@ pub const Decor = struct {
         }
     }
 
-    pub fn paint(self: *Self, display: *Display, xpos: usize, ypos: usize, lines: usize, nextTimo: Tetronimo) !void {
+    pub fn paint(self: *Self, display: *Display, xpos: usize, ypos: usize, level: usize, lines: usize, score:usize, nextTimo: Tetronimo) !void {
         var buf: [32]u8 = undefined;
+        const sl0 = try std.fmt.bufPrint(&buf, "Level: {d}", .{level});
+        try self.paintString(display, xpos, ypos + 1, sl0);
         const sl1 = try std.fmt.bufPrint(&buf, "Lines: {d}", .{lines});
-        try self.paintString(display, xpos, ypos + 1, sl1);
-
-        const sl2 = try std.fmt.bufPrint(&buf, "(q)uit", .{});
-        try self.paintString(display, xpos, ypos + 8, sl2);
+        try self.paintString(display, xpos, ypos + 3, sl1);
+        const sl2 = try std.fmt.bufPrint(&buf, "Score: {d}", .{score});
+        try self.paintString(display, xpos, ypos + 5, sl2);
+        const sl3 = try std.fmt.bufPrint(&buf, "(q)uit", .{});
+        try self.paintString(display, xpos, ypos + 12, sl3);
 
         const nextTimoX = xpos;
-        const nextTimoY = ypos + 2;
+        const nextTimoY = ypos + 6;
 
         for (0..4) |y| {
             for (0..4) |x| {

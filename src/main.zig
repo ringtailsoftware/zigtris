@@ -81,7 +81,7 @@ pub fn main() !void {
         try debris.paint(&stage);
         try player.paint(&stage);
         try stage.paint(&display, STAGE_OFF_X, STAGE_OFF_Y);
-        try decor.paint(&display, (STAGE_OFF_X + Stage.STAGEW) * 2, 1, player.numLines, player.nextTimo);
+        try decor.paint(&display, (STAGE_OFF_X + Stage.STAGEW) * 2 + 1, 1, player.level, player.numLines, player.score, player.nextTimo);
         try display.paint();
     }
 }

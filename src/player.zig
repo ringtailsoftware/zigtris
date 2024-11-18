@@ -115,6 +115,8 @@ pub const Player = struct {
     atRestTime: u32,
     moveDownTime: u32,
     numLines: usize,
+    score: usize,
+    level: usize,
 
     pub fn init() !Self {
         prng = std.rand.DefaultPrng.init(@intCast(std.time.milliTimestamp()));
@@ -129,6 +131,8 @@ pub const Player = struct {
             .atRestTime = 0,
             .moveDownTime = 0,
             .numLines = 0,
+            .score = 0,
+            .level = 1,
         };
     }
 
@@ -145,19 +149,22 @@ pub const Player = struct {
     fn dropDelay(self: *Self) u32 {
         // decrease the drop delay based on number of lines completed
         // mubi library is hardcoded to 0.1Hz tick
-        if (self.numLines < 2) {
-            return 500;
+
+        switch(self.level) {
+            1 => return 500,
+            2 => return 450,
+            3 => return 400,
+            4 => return 350,
+            5 => return 300,
+            6 => return 250,
+            7 => return 200,
+            8 => return 150,
+            else => return 100,
         }
-        if (self.numLines < 5) {
-            return 400;
-        }
-        if (self.numLines < 10) {
-            return 300;
-        }
-        if (self.numLines < 15) {
-            return 200;
-        }
-        return 100;
+    }
+
+    fn calcLevel(self: *Self) usize {
+        return (self.numLines / 5) + 1;
     }
 
     pub fn advance(self: *Self, debris: *Debris) bool {
@@ -171,7 +178,11 @@ pub const Player = struct {
             if (self.atRest and time.millis() > self.atRestTime + 500) {
                 // add tetronimo to debris
                 self.debrisPaint(debris);
-                self.numLines += debris.collapse();
+                const lines = debris.collapse();
+                self.numLines += lines;
+                self.score += lines * self.level * 10;  // multi-line bonus based on level
+                self.score += 1;    // for dropping a piece
+                self.level = self.calcLevel();
                 self.setupTetronimo();
                 if (self.timo.collidesDebris(self.px, self.py, debris)) {
                     return false;
