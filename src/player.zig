@@ -213,21 +213,27 @@ pub const Player = struct {
         try self.timo.paint(stage, self.px, self.py);
     }
 
-    pub fn rotate(self: *Self, debris: *Debris) void {
-        const sinVals = [4]i2{ 0, 1, 0, -1 };
-        const cosVals = [4]i2{ 1, 0, -1, 0 };
-        var newTimo = self.timo;
 
-        var y: i32 = -2;
-        while (y < 2) : (y += 1) {
-            var x: i32 = -2;
-            while (x < 2) : (x += 1) {
-                const ps = self.timo.data[@intCast((y + 2) * 4 + (x + 2))];
-                const a = 1; // 90 deg
-                const x2 = x * cosVals[a] - y * sinVals[a];
-                const y2 = y * cosVals[a] + x * sinVals[a];
-                newTimo.data[@intCast((y2 + 2) * 4 + (x2 + 1))] = ps;
-            }
+
+    pub fn rotate(self: *Self, debris: *Debris) void {
+        // Tetronimo is 4x4 grid and is indexed as in centre of diagram (single hex digit per index)
+        // Rotating left or right will reorder indices
+        // 37BF    0123    C840 
+        // 26AE <- 4567 -> D951
+        // 159D    89AB    EA62
+        // 048C    CDEF    FB73
+
+        const rotRightIndexMapping:[16]u8 = .{
+            0xC, 0x8, 0x4, 0x0,
+            0xD, 0x9, 0x5, 0x1,
+            0xE, 0xA, 0x6, 0x2,
+            0xF, 0xB, 0x7, 0x3,
+        };
+
+        var newTimo:Tetronimo = undefined;
+
+        for (0..16) |i| {
+            newTimo.data[i] = self.timo.data[rotRightIndexMapping[i]];
         }
 
         //only allow if new timo at px,py does not intersect debris (or game walls)
