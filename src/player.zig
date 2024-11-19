@@ -236,9 +236,23 @@ pub const Player = struct {
             newTimo.data[i] = self.timo.data[rotRightIndexMapping[i]];
         }
 
-        //only allow if new timo at px,py does not intersect debris (or game walls)
+        // only allow if new timo at px,py does not intersect debris (or game walls)
         if (!newTimo.collidesDebris(self.px, self.py, debris)) {
             self.timo = newTimo;
+        } else {
+            if (!newTimo.collidesDebris(self.px-1, self.py, debris)) { // kick left 1
+                self.px -= 1;
+                self.timo = newTimo;
+            } else if (!newTimo.collidesDebris(self.px+1, self.py, debris)) {   // kick right 1
+                self.px += 1;
+                self.timo = newTimo;
+            } else if (!newTimo.collidesDebris(self.px-2, self.py, debris)) {   // kick left 2
+                self.px -= 2;
+                self.timo = newTimo;
+            } else if (!newTimo.collidesDebris(self.px+2, self.py, debris)) {   // kick right 2
+                self.px += 2;
+                self.timo = newTimo;
+            }
         }
     }
 
