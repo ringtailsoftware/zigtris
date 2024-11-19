@@ -213,8 +213,6 @@ pub const Player = struct {
         try self.timo.paint(stage, self.px, self.py);
     }
 
-
-
     pub fn rotate(self: *Self, debris: *Debris) void {
         // Tetronimo is 4x4 grid and is indexed as in centre of diagram (single hex digit per index)
         // Rotating left or right will reorder indices
@@ -269,6 +267,12 @@ pub const Player = struct {
 
         if (!self.timo.collidesDebris(newpx, self.py, debris)) {
             self.px = newpx;
+        }
+    }
+
+    pub fn dropDown(self: *Self, debris: *Debris) void {
+        while(self.moveDown(debris)) {
+            self.score += self.level * 2;   // bonus for bigger drops and higher levels
         }
     }
 

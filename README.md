@@ -2,7 +2,9 @@
 
 A minimal terminal Tetris written in Zig. Tested with Zig 0.13.0
 
-`zig build run`. Cursor keys to move, `q` to quit.
+`zig build run`
+
+Cursor keys to move, space to drop, `q` to quit.
 
 ![](demo.gif)
 

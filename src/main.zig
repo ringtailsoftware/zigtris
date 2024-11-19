@@ -67,9 +67,9 @@ pub fn main() !void {
                 .right => {
                     player.moveHorz(1, &debris);
                 },
-
                 .char => |c| switch (c) {
                     'q' => break,
+                    ' ' => player.dropDown(&debris),
                     else => {},
                 },
                 else => {},
