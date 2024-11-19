@@ -221,7 +221,7 @@ pub const Player = struct {
         // 159D    89AB    EA62
         // 048C    CDEF    FB73
 
-        const rotRightIndexMapping:[16]u8 = .{
+        const rotRightIndexMapping:[16]u4 = .{
             0xC, 0x8, 0x4, 0x0,
             0xD, 0x9, 0x5, 0x1,
             0xE, 0xA, 0x6, 0x2,
