@@ -24,8 +24,8 @@
     // internet connectivity.
     .dependencies = .{
         .mibu = .{
-            .url = "git+https://github.com/xyaman/mibu.git#7ac8b02f0534134a9ac79de91abb4c1d28166db7",
-            .hash = "12202556266b6db35cff093d9e0a6c012810758a282b285068309dd9662c67fce84e",
+            .url = "git+https://github.com/xyaman/mibu.git#5cbda43f41f4d1f2769dd32523d8c1b474a4c60f",
+            .hash = "12205e93ed17ab3081a9d5289c2665e67873501f069a6210e02f3d8178a0c6e3156a",
         },
     },
     .paths = .{

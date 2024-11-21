@@ -30,7 +30,7 @@ pub const Display = struct {
 
     pub fn init() !Self {
         const stdin = io.getStdIn();
-        const rt = try term.enableRawMode(stdin.handle, .nonblocking);
+        const rt = try term.enableRawMode(stdin.handle);
         const writer = io.getStdOut().writer();
 
         try cursor.hide(writer);
@@ -54,7 +54,7 @@ pub const Display = struct {
     pub fn getEvent(self: *Self) !events.Event {
         _ = self;
         const stdin = io.getStdIn();
-        const next = try events.next(stdin);
+        const next = try events.nextWithTimeout(stdin, 100);
         return next;
     }
 
