@@ -40,7 +40,7 @@ pub const Decor = struct {
 
         for (0..4) |y| {
             for (0..4) |x| {
-                const p = nextTimo.data[y * 4 + x];
+                const p = nextTimo.anim[nextTimo.animFrame][y * 4 + x];
                 try display.setPixel(nextTimoX + (x * 2 + 1), nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
                 try display.setPixel(nextTimoX + (x * 2 + 1) + 1, nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
             }

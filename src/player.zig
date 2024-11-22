@@ -8,68 +8,220 @@ const time = @import("time.zig");
 var prng: std.Random.Xoshiro256 = undefined;
 var rand: std.Random = undefined;
 
-pub const TetronimoData = [16]Stage.PixelStyle;
+pub const TetronimoFrame = [16]Stage.PixelStyle;
+pub const TetronimoAnim = [4]TetronimoFrame;
 
-const TetI: TetronimoData = .{
-    0, 2, 0, 0,
-    0, 2, 0, 0,
-    0, 2, 0, 0,
-    0, 2, 0, 0,
+const TetI: TetronimoAnim = .{
+    .{
+        0, 0, 0, 0,
+        2, 2, 2, 2,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+
+    .{
+        0, 0, 2, 0,
+        0, 0, 2, 0,
+        0, 0, 2, 0,
+        0, 0, 2, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        2, 2, 2, 2,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 2, 0, 0,
+        0, 2, 0, 0,
+        0, 2, 0, 0,
+        0, 2, 0, 0,
+    },
 };
 
-const TetJ: TetronimoData = .{
-    0, 0, 0, 0,
-    0, 3, 0, 0,
-    0, 3, 3, 3,
-    0, 0, 0, 0,
+const TetJ: TetronimoAnim = .{
+    .{
+        3, 0, 0, 0,
+        3, 3, 3, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+
+    .{
+        0, 3, 3, 0,
+        0, 3, 0, 0,
+        0, 3, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        3, 3, 3, 0,
+        0, 0, 3, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 3, 0, 0,
+        0, 3, 0, 0,
+        3, 3, 0, 0,
+        0, 0, 0, 0,
+    },
 };
 
-const TetL: TetronimoData = .{
-    0, 0, 0, 0,
-    0, 0, 4, 0,
-    4, 4, 4, 0,
-    0, 0, 0, 0,
+const TetL: TetronimoAnim = .{
+    .{
+        0, 0, 4, 0,
+        4, 4, 4, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+
+    .{
+        0, 4, 0, 0,
+        0, 4, 0, 0,
+        0, 4, 4, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        4, 4, 4, 0,
+        4, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        4, 4, 0, 0,
+        0, 4, 0, 0,
+        0, 4, 0, 0,
+        0, 0, 0, 0,
+    },
 };
 
-const TetO: TetronimoData = .{
-    0, 0, 0, 0,
-    0, 5, 5, 0,
-    0, 5, 5, 0,
-    0, 0, 0, 0,
+const TetO: TetronimoAnim = .{
+    .{
+        0, 5, 5, 0,
+        0, 5, 5, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 5, 5, 0,
+        0, 5, 5, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 5, 5, 0,
+        0, 5, 5, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 5, 5, 0,
+        0, 5, 5, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
 };
 
-const TetS: TetronimoData = .{
-    0, 0, 0, 0,
-    0, 6, 6, 0,
-    6, 6, 0, 0,
-    0, 0, 0, 0,
+const TetS: TetronimoAnim = .{
+    .{
+        0, 6, 6, 0,
+        6, 6, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 6, 0, 0,
+        0, 6, 6, 0,
+        0, 0, 6, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        0, 6, 6, 0,
+        6, 6, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        6, 0, 0, 0,
+        6, 6, 0, 0,
+        0, 6, 0, 0,
+        0, 0, 0, 0,
+    },
 };
 
-const TetZ: TetronimoData = .{
-    0, 0, 0, 0,
-    1, 1, 0, 0,
-    0, 1, 1, 0,
-    0, 0, 0, 0,
+const TetZ: TetronimoAnim = .{
+    .{
+        1, 1, 0, 0,
+        0, 1, 1, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 1, 0,
+        0, 1, 1, 0,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        1, 1, 0, 0,
+        0, 1, 1, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 1, 0, 0,
+        1, 1, 0, 0,
+        1, 0, 0, 0,
+        0, 0, 0, 0,
+    },
 };
 
-const TetT: TetronimoData = .{
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 2, 2, 2,
-    0, 0, 2, 0,
+const TetT: TetronimoAnim = .{
+    .{
+        0, 2, 0, 0,
+        2, 2, 2, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 2, 0, 0,
+        0, 2, 2, 0,
+        0, 2, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 0, 0,
+        2, 2, 2, 0,
+        0, 2, 0, 0,
+        0, 0, 0, 0,
+    },
+    .{
+        0, 0, 2, 0,
+        0, 2, 2, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 0,
+    },
 };
 
-pub const pieces = [7]TetronimoData{ TetI, TetJ, TetL, TetO, TetS, TetZ, TetT };
+pub const pieces = [_]TetronimoAnim{ TetI, TetJ, TetL, TetO, TetS, TetZ, TetT };
 
 pub const Tetronimo = struct {
     const Self = @This();
-    data: TetronimoData,
+    anim: TetronimoAnim,
+    animFrame: usize,
+
+    pub fn initRandom() Self {
+        return Self {
+            .animFrame = 0,
+            .anim = pieces[(rand.int(u8)) % pieces.len],
+        };
+    }
 
     pub fn paint(self: *Self, stage: *Stage, px: isize, py: isize) !void {
         // paint to Stage
         for (0..4) |y| {
             for (0..4) |x| {
-                const ps = self.data[y * 4 + x];
+                const ps = self.anim[self.animFrame][y * 4 + x];
                 if (ps != 0) { // 0 is transparent
                     const xo = px + @as(isize, @intCast(x));
                     const yo = py + @as(isize, @intCast(y));
@@ -85,7 +237,7 @@ pub const Tetronimo = struct {
     pub fn collidesDebris(self: *Self, px: isize, py: isize, debris: *Debris) bool {
         for (0..4) |y| {
             for (0..4) |x| {
-                const ps = self.data[y * 4 + x];
+                const ps = self.anim[self.animFrame][y * 4 + x];
                 if (ps != 0) { // 0 is transparent
                     const xo = px + @as(isize, @intCast(x));
                     const yo = py + @as(isize, @intCast(y));
@@ -125,8 +277,8 @@ pub const Player = struct {
         return Self{
             .px = Stage.STAGEW / 2,
             .py = 0,
-            .timo = .{ .data = pieces[(rand.int(u8)) % pieces.len] },
-            .nextTimo = .{ .data = pieces[(rand.int(u8)) % pieces.len] },
+            .timo = Tetronimo.initRandom(),
+            .nextTimo = Tetronimo.initRandom(),
             .atRest = false,
             .atRestTime = 0,
             .moveDownTime = 0,
@@ -140,7 +292,7 @@ pub const Player = struct {
         self.px = Stage.STAGEW / 2;
         self.py = 0;
         self.timo = self.nextTimo;
-        self.nextTimo = .{ .data = pieces[(rand.int(u8)) % pieces.len] };
+        self.nextTimo = Tetronimo.initRandom();
         self.atRest = false;
         self.atRestTime = 0;
         self.moveDownTime = 0;
@@ -196,7 +348,7 @@ pub const Player = struct {
         // paint Player to Debris
         for (0..4) |y| {
             for (0..4) |x| {
-                const ps = self.timo.data[y * 4 + x];
+                const ps = self.timo.anim[self.timo.animFrame][y * 4 + x];
                 if (ps != 0) { // 0 is transparent
                     const xo = self.px + @as(isize, @intCast(x));
                     const yo = self.py + @as(isize, @intCast(y));
@@ -214,29 +366,17 @@ pub const Player = struct {
     }
 
     pub fn rotate(self: *Self, debris: *Debris) void {
-        // Tetronimo is 4x4 grid and is indexed as in centre of diagram (single hex digit per index)
-        // Rotating left or right will reorder indices
-        // 37BF    0123    C840 
-        // 26AE <- 4567 -> D951
-        // 159D    89AB    EA62
-        // 048C    CDEF    FB73
-
-        const rotRightIndexMapping:[16]u4 = .{
-            0xC, 0x8, 0x4, 0x0,
-            0xD, 0x9, 0x5, 0x1,
-            0xE, 0xA, 0x6, 0x2,
-            0xF, 0xB, 0x7, 0x3,
-        };
-
         var newTimo:Tetronimo = undefined;
 
-        for (0..16) |i| {
-            newTimo.data[i] = self.timo.data[rotRightIndexMapping[i]];
-        }
+        const nextFrame = (self.timo.animFrame + 1) % 4;
+
+        newTimo = self.timo;
+        newTimo.animFrame = nextFrame;
 
         // only allow if new timo at px,py does not intersect debris (or game walls)
         if (!newTimo.collidesDebris(self.px, self.py, debris)) {
             self.timo = newTimo;
+            self.timo.animFrame = nextFrame;
         } else {
             if (!newTimo.collidesDebris(self.px-1, self.py, debris)) { // kick left 1
                 self.px -= 1;
