@@ -45,8 +45,8 @@ pub const Stage = struct {
         for (0..STAGEH) |y| {
             for (0..STAGEW) |x| {
                 const p = self.buf[y * STAGEW + x];
-                try display.setPixel(xo + (x * 2 + 1), yo + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
-                try display.setPixel(xo + (x * 2 + 1) + 1, yo + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
+                try display.setPixel(xo + (x * 2 + 1), yo + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p], .bold = false });
+                try display.setPixel(xo + (x * 2 + 1) + 1, yo + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p], .bold = false });
             }
         }
     }

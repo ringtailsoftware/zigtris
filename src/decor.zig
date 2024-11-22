@@ -18,7 +18,7 @@ pub const Decor = struct {
 
         var strx = xpos;
         for (sl) |elem| {
-            const p: Display.DisplayPixel = .{ .fg = .white, .bg = .black, .c = elem };
+            const p: Display.DisplayPixel = .{ .fg = .white, .bg = .black, .c = elem, .bold = true };
             try display.setPixel(strx, ypos, p);
             strx += 1;
         }
@@ -41,8 +41,8 @@ pub const Decor = struct {
         for (0..4) |y| {
             for (0..4) |x| {
                 const p = nextTimo.anim[nextTimo.animFrame][y * 4 + x];
-                try display.setPixel(nextTimoX + (x * 2 + 1), nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
-                try display.setPixel(nextTimoX + (x * 2 + 1) + 1, nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p] });
+                try display.setPixel(nextTimoX + (x * 2 + 1), nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p], .bold = false });
+                try display.setPixel(nextTimoX + (x * 2 + 1) + 1, nextTimoY + (y + 1), .{ .fg = .white, .bg = PixelStyleColors[p], .c = PixelStyleChars[p], .bold = false });
             }
         }
     }

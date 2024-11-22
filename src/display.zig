@@ -9,6 +9,7 @@ const term = mibu.term;
 const utils = mibu.utils;
 const color = mibu.color;
 const cursor = mibu.cursor;
+const style = mibu.style;
 
 const DISPLAYW = 37;
 const DISPLAYH = 21;
@@ -17,11 +18,12 @@ pub const Display = struct {
     pub const DisplayPixel = struct {
         fg: color.Color,
         bg: color.Color,
+        bold: bool,
         c: u8,
     };
 
     const Self = @This();
-    const CLSPixel: DisplayPixel = .{ .fg = .white, .bg = .blue, .c = ' ' };
+    const CLSPixel: DisplayPixel = .{ .fg = .white, .bg = .blue, .c = ' ', .bold = false };
     raw_term: term.RawTerm,
     bufs: [2][DISPLAYW * DISPLAYH]DisplayPixel, // double buffer
     liveBufIndex: u1,
@@ -82,6 +84,11 @@ pub const Display = struct {
                     try cursor.goTo(writer, x, y);
                     try color.bg256(writer, p.bg);
                     try color.fg256(writer, p.fg);
+                    if (p.bold) {
+                        try style.bold(writer);
+                    } else {
+                        try style.noBold(writer);
+                    }
                     try writer.print("{c}", .{p.c});
                     self.bufs[self.offsBufIndex][y * DISPLAYW + x] = p;
                 }
