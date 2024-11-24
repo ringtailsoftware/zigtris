@@ -76,6 +76,8 @@ pub const Display = struct {
     pub fn paint(self: *Self) !void {
         // just draw changes to avoid sending excess data to terminal
         const writer = io.getStdOut().writer();
+        try writer.print("{s}", .{utils.comptimeCsi("?2026h", .{})});
+
         for (0..DISPLAYH) |y| {
             for (0..DISPLAYW) |x| {
                 const p = self.bufs[self.liveBufIndex][y * DISPLAYW + x];
@@ -95,6 +97,7 @@ pub const Display = struct {
             }
         }
 
+        try writer.print("{s}", .{utils.comptimeCsi("?2026l", .{})});
         self.forceUpdate = false;
 
         // flip
