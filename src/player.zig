@@ -327,7 +327,7 @@ pub const Player = struct {
         }
 
         if (self.atRest) {
-            if (self.atRest and time.millis() > self.atRestTime + 500) {
+            if (self.atRest and time.millis() > self.atRestTime + self.dropDelay()) {
                 // add tetronimo to debris
                 self.debrisPaint(debris);
                 const lines = debris.collapse();
