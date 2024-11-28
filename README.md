@@ -8,6 +8,10 @@ Cursor keys to move, space to drop, `q` to quit.
 
 ![](demo.gif)
 
+# I just want to play! don't make me install Zig
+
+    docker run --rm -it -v `pwd`:/app -w /app kassany/alpine-ziglang:0.13.0 zig build run
+
 # Run as a service via ssh
 
     ./run-as-service.sh
@@ -15,7 +19,7 @@ Cursor keys to move, space to drop, `q` to quit.
     ssh zigtris@localhost -p 2022
 
 # Notes
-#
+
 Some notes for anyone looking at the code:
 
  - `Display` is a thin wrapper on top of the `mibu` terminal library, it provides a double buffered one pixel per character interface where it only redraws changed pixels on the buffer flip
