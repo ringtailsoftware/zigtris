@@ -24,21 +24,23 @@ pub const Display = struct {
 
     const Self = @This();
     const CLSPixel: DisplayPixel = .{ .fg = .white, .bg = .blue, .c = ' ', .bold = false };
-    raw_term: term.RawTerm,
+    raw_termOpt: ?term.RawTerm,
     bufs: [2][DISPLAYW * DISPLAYH]DisplayPixel, // double buffer
     liveBufIndex: u1,
     offsBufIndex: u1,
     forceUpdate: bool,
 
-    pub fn init() !Self {
-        const stdin = io.getStdIn();
-        const rt = try term.enableRawMode(stdin.handle);
-        const writer = io.getStdOut().writer();
+    pub fn init(writer:anytype, reader:anytype, comptime rawmode:bool) !Self {
+        var raw_termOpt: ?term.RawTerm = null;
+
+        if (rawmode) {
+            raw_termOpt = try term.enableRawMode(reader.handle);
+        }
 
         try cursor.hide(writer);
 
         return Self{
-            .raw_term = rt,
+            .raw_termOpt = raw_termOpt,
             .bufs = undefined,
             .liveBufIndex = 0,
             .offsBufIndex = 1,
@@ -46,17 +48,17 @@ pub const Display = struct {
         };
     }
 
-    pub fn destroy(self: *Self) void {
-        const writer = io.getStdOut().writer();
+    pub fn destroy(self: *Self, writer:anytype) void {
         cursor.show(writer) catch {};
         cursor.goTo(writer, 0, DISPLAYH) catch {};
-        self.raw_term.disableRawMode() catch {};
+        if (self.raw_termOpt) |*rt| {
+            rt.disableRawMode() catch {};
+        }
     }
 
-    pub fn getEvent(self: *Self) !events.Event {
+    pub fn getEvent(self: *Self, reader:anytype) !events.Event {
         _ = self;
-        const stdin = io.getStdIn();
-        const next = try events.nextWithTimeout(stdin, 100);
+        const next = try events.nextWithTimeout(reader, 100);
         return next;
     }
 
@@ -73,9 +75,8 @@ pub const Display = struct {
         }
     }
 
-    pub fn paint(self: *Self) !void {
+    pub fn paint(self: *Self, writer:anytype) !void {
         // just draw changes to avoid sending excess data to terminal
-        const writer = io.getStdOut().writer();
         try writer.print("{s}", .{utils.comptimeCsi("?2026h", .{})});
 
         for (0..DISPLAYH) |y| {

@@ -22,12 +22,14 @@ const STAGE_OFF_X = 2;
 const STAGE_OFF_Y = 1;
 
 pub fn main() !void {
+    const writer = std.io.getStdOut().writer();
+    const reader = std.io.getStdIn();
     var gameOver = false;
     time.initTime();
 
-    var display = try Display.init();
+    var display = try Display.init(writer, reader, true); // raw terminal
     display.cls();
-    defer display.destroy();
+    defer display.destroy(writer);
 
     var stage = try Stage.init();
     stage.cls();
@@ -38,14 +40,14 @@ pub fn main() !void {
 
     var player = try Player.init();
 
-    try display.paint();
+    try display.paint(writer);
 
     var decor = try Decor.init();
 
     var lastTick: u32 = 0;
 
     while (!gameOver) {
-        const next = try display.getEvent();
+        const next = try display.getEvent(reader);
         if (time.millis() >= lastTick + 100) { // 100ms tick (mubi operates at 0.1Hz)
             lastTick = time.millis();
             if (!player.advance(&debris)) {
@@ -82,6 +84,6 @@ pub fn main() !void {
         try player.paint(&stage);
         try stage.paint(&display, STAGE_OFF_X, STAGE_OFF_Y);
         try decor.paint(&display, (STAGE_OFF_X + Stage.STAGEW) * 2 + 1, 1, player.level, player.numLines, player.score, player.nextTimo);
-        try display.paint();
+        try display.paint(writer);
     }
 }
