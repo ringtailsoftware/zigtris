@@ -10,10 +10,6 @@ const io = std.io;
 
 const mibu = @import("mibu");
 const events = mibu.events;
-const term = mibu.term;
-const utils = mibu.utils;
-const color = mibu.color;
-const cursor = mibu.cursor;
 
 const time = @import("time.zig");
 
@@ -97,8 +93,7 @@ pub fn gameloop(writer:anytype, now:u32, next:mibu.events.Event) !bool {
     try stage.paint(&display, STAGE_OFF_X, STAGE_OFF_Y);
     try decor.paint(&display, (STAGE_OFF_X + Stage.STAGEW) * 2 + 1, 1, player.level, player.numLines, player.score, player.nextTimo);
     try display.paint(writer);
-    return true;
-
+    return !gameOver;
 }
 
 pub fn main() !void {
