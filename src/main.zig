@@ -27,12 +27,12 @@ var lastTick: u32 = 0;
 var prng: std.Random.Xoshiro256 = undefined;
 var rand: std.Random = undefined;
 
-pub fn gamesetup(reader:anytype, writer:anytype, comptime raw:bool, now:u32) !void {
+pub fn gamesetup(writer:anytype, now:u32) !void {
     gameOver = false;
     prng = std.rand.DefaultPrng.init(@intCast(now));
     rand = prng.random();
 
-    display = try Display.init(writer, reader, raw); // raw terminal
+    display = try Display.init(writer);
     display.cls();
 
     stage = try Stage.init();
@@ -101,8 +101,9 @@ pub fn main() !void {
     const reader = std.io.getStdIn();
     time.initTime();
 
+    var rt = try mibu.term.enableRawMode(reader.handle);
     const seed:u32 = @truncate(@as(u128, @intCast(std.time.nanoTimestamp())));
-    try gamesetup(reader, writer, true, seed);
+    try gamesetup(writer, seed);
 
     while (!gameOver) {
         const next = try display.getEvent(reader);
@@ -112,4 +113,5 @@ pub fn main() !void {
     }
 
     gamestop(writer);
+    _ = rt.disableRawMode() catch 0;
 }

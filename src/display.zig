@@ -24,23 +24,15 @@ pub const Display = struct {
 
     const Self = @This();
     const CLSPixel: DisplayPixel = .{ .fg = .white, .bg = .blue, .c = ' ', .bold = false };
-    raw_termOpt: ?term.RawTerm,
     bufs: [2][DISPLAYW * DISPLAYH]DisplayPixel, // double buffer
     liveBufIndex: u1,
     offsBufIndex: u1,
     forceUpdate: bool,
 
-    pub fn init(writer:anytype, reader:anytype, comptime rawmode:bool) !Self {
-        var raw_termOpt: ?term.RawTerm = null;
-
-        if (rawmode) {
-            raw_termOpt = try term.enableRawMode(reader.handle);
-        }
-
+    pub fn init(writer:anytype) !Self {
         try cursor.hide(writer);
 
         return Self{
-            .raw_termOpt = raw_termOpt,
             .bufs = undefined,
             .liveBufIndex = 0,
             .offsBufIndex = 1,
@@ -49,11 +41,9 @@ pub const Display = struct {
     }
 
     pub fn destroy(self: *Self, writer:anytype) void {
+        _ = self;
         cursor.show(writer) catch {};
         cursor.goTo(writer, 0, DISPLAYH) catch {};
-        if (self.raw_termOpt) |*rt| {
-            rt.disableRawMode() catch {};
-        }
     }
 
     pub fn getEvent(self: *Self, reader:anytype) !events.Event {
