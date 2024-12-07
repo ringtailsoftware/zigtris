@@ -5,9 +5,6 @@ const std = @import("std");
 const Debris = @import("debris.zig").Debris;
 const time = @import("time.zig");
 
-var prng: std.Random.Xoshiro256 = undefined;
-var rand: std.Random = undefined;
-
 pub const TetronimoFrame = [16]Stage.PixelStyle;
 pub const TetronimoAnim = [4]TetronimoFrame;
 
@@ -210,7 +207,7 @@ pub const Tetronimo = struct {
     anim: TetronimoAnim,
     animFrame: usize,
 
-    pub fn initRandom() Self {
+    pub fn initRandom(rand:std.Random) Self {
         return Self {
             .animFrame = 0,
             .anim = pieces[(rand.int(u8)) % pieces.len],
@@ -269,22 +266,21 @@ pub const Player = struct {
     numLines: usize,
     score: usize,
     level: usize,
+    rand: std.Random,
 
-    pub fn init() !Self {
-        prng = std.rand.DefaultPrng.init(@intCast(std.time.milliTimestamp()));
-        rand = prng.random();
-
+    pub fn init(rand:std.Random) !Self {
         return Self{
             .px = Stage.STAGEW / 2,
             .py = 0,
-            .timo = Tetronimo.initRandom(),
-            .nextTimo = Tetronimo.initRandom(),
+            .timo = Tetronimo.initRandom(rand),
+            .nextTimo = Tetronimo.initRandom(rand),
             .atRest = false,
             .atRestTime = 0,
             .moveDownTime = 0,
             .numLines = 0,
             .score = 0,
             .level = 1,
+            .rand = rand,
         };
     }
 
@@ -292,7 +288,7 @@ pub const Player = struct {
         self.px = Stage.STAGEW / 2;
         self.py = 0;
         self.timo = self.nextTimo;
-        self.nextTimo = Tetronimo.initRandom();
+        self.nextTimo = Tetronimo.initRandom(self.rand);
         self.atRest = false;
         self.atRestTime = 0;
         self.moveDownTime = 0;
@@ -319,15 +315,15 @@ pub const Player = struct {
         return (self.numLines / 5) + 1;
     }
 
-    pub fn advance(self: *Self, debris: *Debris) bool {
-        if (time.millis() > self.moveDownTime + self.dropDelay()) { // try to move down
-            if (self.moveDown(debris)) {
-                self.moveDownTime = time.millis(); // update last move time, iff moved ok
+    pub fn advance(self: *Self, debris: *Debris, now:u32) bool {
+        if (now > self.moveDownTime + self.dropDelay()) { // try to move down
+            if (self.moveDown(debris, now)) {
+                self.moveDownTime = now; // update last move time, iff moved ok
             }
         }
 
         if (self.atRest) {
-            if (self.atRest and time.millis() > self.atRestTime + self.dropDelay()) {
+            if (self.atRest and now > self.atRestTime + self.dropDelay()) {
                 // add tetronimo to debris
                 self.debrisPaint(debris);
                 const lines = debris.collapse();
@@ -410,13 +406,13 @@ pub const Player = struct {
         }
     }
 
-    pub fn dropDown(self: *Self, debris: *Debris) void {
-        while(self.moveDown(debris)) {
+    pub fn dropDown(self: *Self, debris: *Debris, now:u32) void {
+        while(self.moveDown(debris, now)) {
             self.score += self.level * 2;   // bonus for bigger drops and higher levels
         }
     }
 
-    pub fn moveDown(self: *Self, debris: *Debris) bool {
+    pub fn moveDown(self: *Self, debris: *Debris, now:u32) bool {
         var newpy = self.py;
 
         newpy += 1;
@@ -428,7 +424,7 @@ pub const Player = struct {
         }
         if (!self.atRest) {
             self.atRest = true;
-            self.atRestTime = time.millis();
+            self.atRestTime = now;
         }
         return false; // unable to move down
     }

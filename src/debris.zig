@@ -3,31 +3,27 @@
 const std = @import("std");
 const Stage = @import("stage.zig").Stage;
 
-var prng: std.Random.Xoshiro256 = undefined;
-var rand: std.Random = undefined;
-
 pub const Debris = struct {
     const Self = @This();
     buf: [Stage.STAGEW * Stage.STAGEH]Stage.PixelStyle,
+    rand: std.Random,
 
-    pub fn init() !Self {
-        prng = std.rand.DefaultPrng.init(@intCast(std.time.milliTimestamp()));
-        rand = prng.random();
-
+    pub fn init(rand:std.Random) !Self {
         return Self{
             .buf = undefined,
+            .rand = rand,
         };
     }
 
     pub fn addRandom(self: *Self) void {
         for (0..Stage.STAGEW) |x| {
-            if (rand.int(u8) % 2 == 0) {
-                self.setPixel(x, Stage.STAGEH - 1, rand.int(u3));
+            if (self.rand.int(u8) % 2 == 0) {
+                self.setPixel(x, Stage.STAGEH - 1, self.rand.int(u3));
             }
-            if (rand.int(u8) % 4 == 0) {
+            if (self.rand.int(u8) % 4 == 0) {
                 self.setPixel(x, Stage.STAGEH - 2, 1);
             }
-            if (rand.int(u8) % 8 == 0) {
+            if (self.rand.int(u8) % 8 == 0) {
                 self.setPixel(x, Stage.STAGEH - 3, 1);
             }
         }
