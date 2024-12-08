@@ -26,8 +26,15 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    const mibu_mod = mibu.module("mibu");
 
-    exe.root_module.addImport("mibu", mibu.module("mibu"));
+    const zigtris_mod = b.addModule("zigtris", .{
+        .root_source_file = b.path("src/main.zig"),
+    });
+    zigtris_mod.addImport("mibu", mibu_mod);
+
+    exe.root_module.addImport("mibu", mibu_mod);
+    exe.root_module.addImport("zigtris", zigtris_mod);
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
