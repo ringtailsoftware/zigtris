@@ -29,7 +29,7 @@ var rand: std.Random = undefined;
 
 pub fn gamesetup(writer:anytype, now:u32) !void {
     gameOver = false;
-    prng = std.rand.DefaultPrng.init(@intCast(now));
+    prng = std.Random.DefaultPrng.init(@intCast(now));
     rand = prng.random();
 
     display = try Display.init(writer);
