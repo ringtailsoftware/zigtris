@@ -1,6 +1,6 @@
 # Zigtris
 
-A minimal terminal Tetris written in Zig. Tested with Zig 0.13.0
+A minimal terminal Tetris written in Zig. Tested with Zig 0.14.0
 
 `zig build run`
 
