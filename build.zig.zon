@@ -1,10 +1,11 @@
 .{
-    .name = "zigtris",
+    .name = .zigtris,
+    .fingerprint = 0x1f86de49222ffda1,
     .version = "0.0.1",
     .dependencies = .{
         .mibu = .{
-            .url = "git+https://github.com/xyaman/mibu.git#b001662c929e2719ee24be585a3120640f946337",
-            .hash = "1220d78664322b50e31a99cfb004b6fa60c43098d95abf7ec60a21ebeaf1c914edaf",
+            .url = "git+https://github.com/xyaman/mibu.git#be3713ff04e7db3584669e679253ef388e426dc6",
+            .hash = "mibu-0.0.1-dev-Ddr1riTEAAAYAe1TWBT--W8fPUL8UyBE7dy-yNNZ3z5V",
         },
     },
     .paths = .{

@@ -64,7 +64,7 @@ pub fn gameloop(writer:anytype, now:u32, next:mibu.events.Event) !bool {
     }
 
     switch (next) {
-        .key => |k| switch (k) {
+        .key => |k| switch (k.code) {
             .down => {
                 _ = player.moveDown(&debris, now);
             },
@@ -97,8 +97,12 @@ pub fn gameloop(writer:anytype, now:u32, next:mibu.events.Event) !bool {
 }
 
 pub fn main() !void {
-    const writer = std.io.getStdOut().writer();
-    const reader = std.io.getStdIn();
+    var stdout_buffer: [1]u8 = undefined;
+    var stdout_file = std.fs.File.stdout();
+    var stdout_writer = stdout_file.writer(&stdout_buffer);
+    const writer = &stdout_writer.interface;
+    const reader = std.fs.File.stdin();
+
     time.initTime();
 
     var rt = try mibu.term.enableRawMode(reader.handle);

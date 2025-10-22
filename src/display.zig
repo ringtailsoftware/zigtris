@@ -78,9 +78,9 @@ pub const Display = struct {
                     try color.bg256(writer, p.bg);
                     try color.fg256(writer, p.fg);
                     if (p.bold) {
-                        try style.bold(writer);
+                        try style.bold(writer, true);
                     } else {
-                        try style.noBold(writer);
+                        try style.bold(writer, false);
                     }
                     try writer.print("{c}", .{p.c});
                     self.bufs[self.offsBufIndex][y * DISPLAYW + x] = p;

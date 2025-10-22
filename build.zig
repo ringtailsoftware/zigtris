@@ -17,9 +17,11 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{
         .name = "zigtris",
-        .root_source_file = b.path("src/main.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
 
     const mibu = b.dependency("mibu", .{
@@ -28,9 +30,11 @@ pub fn build(b: *std.Build) void {
     });
     const mibu_mod = mibu.module("mibu");
 
-    const zigtris_mod = b.addModule("zigtris", .{
+    const zigtris_mod =  b.createModule(.{
         .root_source_file = b.path("src/main.zig"),
     });
+
+    exe.root_module.addImport("zigtris", zigtris_mod);
     zigtris_mod.addImport("mibu", mibu_mod);
 
     exe.root_module.addImport("mibu", mibu_mod);
@@ -65,9 +69,11 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     const exe_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/main.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
 
     const run_exe_unit_tests = b.addRunArtifact(exe_unit_tests);

@@ -12,7 +12,7 @@ const cursor = mibu.cursor;
 
 // style 0 = empty
 pub const PixelStyleChars = [8]u8{ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
-pub const PixelStyleColors = [8]color.Color{ .black, .white, .red, .green, .yellow, .magenta, .cyan, .blue };
+pub const PixelStyleColors = [8]color.Color{ .black, .white, .red, .green, .yellow, .purple, .silver, .blue };
 
 pub const Stage = struct {
     pub const STAGEW = 10;
