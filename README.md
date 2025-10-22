@@ -1,16 +1,12 @@
 # Zigtris
 
-A minimal terminal Tetris written in Zig. Tested with Zig 0.14.0
+A minimal terminal Tetris written in Zig. Tested with Zig 0.15.2
 
 `zig build run`
 
 Cursor keys to move, space to drop, `q` to quit.
 
 ![](demo.gif)
-
-# I just want to play! don't make me install Zig
-
-    docker run --rm -it -v `pwd`:/app -w /app kassany/alpine-ziglang:0.13.0 zig build run
 
 # Run as a service via ssh
 
