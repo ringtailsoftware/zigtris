@@ -15,13 +15,15 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
+    const zigtris_mod = b.addModule("zigtris", .{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     const exe = b.addExecutable(.{
         .name = "zigtris",
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("src/main.zig"),
-            .target = target,
-            .optimize = optimize,
-        }),
+        .root_module = zigtris_mod,
     });
 
     const mibu = b.dependency("mibu", .{
@@ -29,10 +31,6 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     const mibu_mod = mibu.module("mibu");
-
-    const zigtris_mod =  b.createModule(.{
-        .root_source_file = b.path("src/main.zig"),
-    });
 
     exe.root_module.addImport("zigtris", zigtris_mod);
     zigtris_mod.addImport("mibu", mibu_mod);
