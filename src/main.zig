@@ -44,7 +44,7 @@ pub fn gamesetup(writer:anytype, now:u32) !void {
 
     player = try Player.init(rand);
 
-    try display.paint(writer);
+//    try display.paint(writer);
 
     decor = try Decor.init();
 
